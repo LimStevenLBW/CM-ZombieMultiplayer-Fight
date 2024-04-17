@@ -21,6 +21,17 @@ public class UsernameBillboarding : MonoBehaviour
 
     void LateUpdate()
     {
-        if(target != null) transform.LookAt(target);
+        if (target == null && Camera.main != null)
+        {
+            target = Camera.main.transform;
+        }
+
+        if (target != null)
+        {
+            //transform.LookAt(target);
+
+            transform.rotation = Quaternion.LookRotation(transform.position - target.position);
+
+        }
     }
 }

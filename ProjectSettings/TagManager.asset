@@ -6,11 +6,15 @@ TagManager:
   tags:
   - Attackable
   - PlayerAimTarget
+  - Ground
+  - Enemy
+  - Canvas
+  - Shop
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - 

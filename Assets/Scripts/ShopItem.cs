@@ -35,6 +35,10 @@ public class ShopItem : MonoBehaviour
         image.sprite = weapon.sprite;
 
     }
+    public void SetPlayer(ImprovisedPlayerScript player)
+    {
+        this.player = player;
+    }
 
     // Start is called before the first frame update
     void Start()

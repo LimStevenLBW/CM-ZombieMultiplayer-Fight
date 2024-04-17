@@ -10,15 +10,12 @@ public class PlayerCanvas : NetworkBehaviour
     public GameOverScreen GOS;
     public TextMeshProUGUI goldCounter;
     public TextMeshProUGUI playersOnlineText;
-    public ShopUI shopUI;
     public Chat chat;
 
     private NetworkVariable<int> playerCount = new NetworkVariable<int>(0, 
         NetworkVariableReadPermission.Everyone, 
         NetworkVariableWritePermission.Server
     );
-
-    
 
     // Start is called before the first frame update
     void Start()
@@ -51,16 +48,6 @@ public class PlayerCanvas : NetworkBehaviour
     public void UpdateGoldCounter(int count)
     {
         goldCounter.SetText(count.ToString());
-    }
-
-    public void ShowShop()
-    {
-        shopUI.gameObject.SetActive(true);
-    }
-
-    public void HideShop()
-    {
-        shopUI.gameObject.SetActive(false);
     }
 
     public bool ToggleChat(string playerName)

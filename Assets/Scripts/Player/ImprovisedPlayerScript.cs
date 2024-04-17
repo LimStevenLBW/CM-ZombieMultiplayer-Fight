@@ -37,6 +37,7 @@ public class ImprovisedPlayerScript : NetworkBehaviour
     public Projectile dodgeballPrefab;
 
     private Stats playerStats;
+    private ShopUI shop;
     private PlayerCanvas playerCanvas;
     private Rigidbody body;
     private bool isGrounded;
@@ -56,16 +57,6 @@ public class ImprovisedPlayerScript : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (IsOwner)
-        {
-            for (int i=0; i < GameManager.instance.playerList.Count; i++)
-            {
-                ImprovisedPlayerScript player = GameManager.instance.playerList[i];
-                player.usernameText.SetTarget(transform);
-            }
-
-        }
-
         //Basically this runs on other players, not you
         if (!IsOwner)
         {
@@ -93,12 +84,18 @@ public class ImprovisedPlayerScript : NetworkBehaviour
         body = GetComponent<Rigidbody>();
         swingCooldown = true;
 
-        playerCanvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<PlayerCanvas>();
-        playerCanvas.SetHealthBar(playerStats.GetHealth());
-        playerCanvas.UpdateGoldCounter(playerStats.GetCoins());
+        if (IsOwner)
+        {
+            shop = GameObject.FindGameObjectWithTag("Shop").GetComponent<ShopUI>();
+            shop.SetPlayer(this);
+            playerCanvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<PlayerCanvas>();
+            playerCanvas.SetHealthBar(playerStats.GetHealth());
+            playerCanvas.UpdateGoldCounter(playerStats.GetCoins());
 
-        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-        
+            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+
+        }
+
 
     }
 
@@ -343,12 +340,12 @@ public class ImprovisedPlayerScript : NetworkBehaviour
 
     public void ShowShop()
     {
-        playerCanvas.ShowShop();
+        shop.ShowShop();
     }
 
     public void HideShop()
     {
-        playerCanvas.HideShop();
+        shop.HideShop();
     }
 
     public int GetCoins()

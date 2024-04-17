@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/FP Test.unity
     guid: 0e2b5d8ee09a7b044b27967a51956861
+  - enabled: 1
+    path: Assets/SteamNGO/Examples/Scenes/SteamGameExample.unity
+    guid: dfc07883338b146a3b06ae66a6a8948f
   m_configObjects: {}

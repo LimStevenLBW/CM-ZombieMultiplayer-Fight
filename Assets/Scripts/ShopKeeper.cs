@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
-public class Shop : NetworkBehaviour
+public class ShopKeeper : NetworkBehaviour
 {
     // Start is called before the first frame update
     void Start()
@@ -30,7 +30,7 @@ public class Shop : NetworkBehaviour
             }
             else
             {
-                
+               
             }
         }
     }
@@ -44,7 +44,7 @@ public class Shop : NetworkBehaviour
 
             if (playerID == NetworkManager.Singleton.LocalClientId)
             {
-                Cursor.lockState = CursorLockMode.None;
+                Cursor.lockState = CursorLockMode.Locked;
                 player.HideShop();
             }
             else
