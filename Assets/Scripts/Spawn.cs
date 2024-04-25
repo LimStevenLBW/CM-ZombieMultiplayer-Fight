@@ -6,26 +6,40 @@ using UnityEngine;
 public class Spawn : NetworkBehaviour, Attackable
 {
     public EnemyAI enemyPrefab;
+    public int spawnLimit;
     public float spawnRateTimer;
     public bool isConstant;
+    public bool isActive;
 
     public override void OnNetworkSpawn()
     {
         if (!IsServer) return;
 
-        if (isConstant) StartCoroutine(SpawnEnemy());
+        if (isConstant && isActive) StartCoroutine(SpawnEnemy());
     }
 
+    public void Trigger()
+    {
+        isActive = true;
+        StartCoroutine(SpawnEnemy());
+    }
 
     IEnumerator SpawnEnemy()
     {
-        while (true)
+        int spawnAmount = 0;
+        while (spawnAmount < spawnLimit)
         {
+            spawnAmount++;
             yield return new WaitForSeconds(spawnRateTimer);
 
             EnemyAI enemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity);
             enemy.GetComponent<NetworkObject>().Spawn();
         }
+    }
+    public void Attacked(float playerForceAmount, Vector3 forceDirection, float attackPower)
+    {
+        GetComponent<NetworkObject>().Despawn();
+        Destroy(gameObject);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -41,11 +55,6 @@ public class Spawn : NetworkBehaviour, Attackable
     void Update()
     {
         
-    }
-
-    public void Attacked(float playerForceAmount, Vector3 forceDirection, float attackPower)
-    {
-        Destroy(gameObject);
     }
 
 }

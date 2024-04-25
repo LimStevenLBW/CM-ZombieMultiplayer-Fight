@@ -92,7 +92,7 @@ public class ImprovisedPlayerScript : NetworkBehaviour
             playerCanvas.SetHealthBar(playerStats.GetHealth());
             playerCanvas.UpdateGoldCounter(playerStats.GetCoins());
 
-            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+            Cursor.lockState = CursorLockMode.Locked;
 
         }
 
@@ -224,12 +224,14 @@ public class ImprovisedPlayerScript : NetworkBehaviour
     {
         if (Input.GetMouseButtonDown(0) && swingCooldown)
         {
+            Cursor.lockState = CursorLockMode.Locked;
             playerAudio.PlayAudio("attack");
             if (atkCorou != null) { StopCoroutine(atkCorou); }
             atkCorou = StartCoroutine(AttackCoroutine());
         }
         else if (Input.GetMouseButtonDown(1)) //Right click to fire
         {
+            Cursor.lockState = CursorLockMode.Locked;
             playerAudio.PlayAudio("projectile");
 
             cameraForward = playercamera.transform.forward;
@@ -278,30 +280,16 @@ public class ImprovisedPlayerScript : NetworkBehaviour
     {
         if (collision.gameObject.GetComponent<EnemyAI>())
         {
-
-            EnemyAI zombie = collision.gameObject.GetComponent<EnemyAI>();
-            Vector3 direction = transform.position - zombie.transform.position;
-            body.AddForce(direction.normalized * 10, ForceMode.VelocityChange);
-
-            playerStats.TakeDamage(zombie.enemyStats.GetAttack());
             playerAudio.PlayAudio("damage");
-            playerCanvas.SetHealthBar(playerStats.GetHealth());
+            if (IsOwner)
+            {
+                EnemyAI zombie = collision.gameObject.GetComponent<EnemyAI>();
+                Vector3 direction = transform.position - zombie.transform.position;
+                body.AddForce(direction.normalized * 10, ForceMode.VelocityChange);
 
-            //if(IsServer) Debug.Log("Ran on Server");
-            //Debug.Log(OwnerClientId);
-            /*
-             * 
-           if (zombie.GetIsActive()) 
-           {
-
-             
-           
-               zombie.Stun(0.5f);
-
-            
-           }
-               */
-
+                playerStats.TakeDamage(zombie.enemyStats.GetAttack());
+                playerCanvas.SetHealthBar(playerStats.GetHealth());
+            }
         }
         if (collision.gameObject.tag == "Ground")
         {

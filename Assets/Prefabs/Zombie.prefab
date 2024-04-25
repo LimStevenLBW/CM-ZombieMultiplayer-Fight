@@ -552,6 +552,8 @@ MonoBehaviour:
   player: {fileID: 0}
   health:
     m_InternalValue: 100
+  coins:
+    m_InternalValue: 100
   speed:
     m_InternalValue: 5
   jumpHeight:

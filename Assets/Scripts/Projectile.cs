@@ -46,14 +46,24 @@ public class Projectile : NetworkBehaviour, Attackable
 
     private void OnCollisionEnter(Collision collision)
     {
+        HandleCollide(collision.gameObject);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        HandleCollide(other.gameObject);
+    }
+
+    private void HandleCollide(GameObject obj)
+    {
         if (!IsServer) return;
 
-        if(collision.gameObject.GetComponent<Attackable>() != null)
+        if (obj.GetComponent<Attackable>() != null)
         {
             Debug.Log(OwnerClientId + "Collision");
-            Attackable attackable = collision.gameObject.GetComponent<Attackable>();
-            Vector3 enemyPos = collision.gameObject.transform.position;
-            
+            Attackable attackable = obj.GetComponent<Attackable>();
+            Vector3 enemyPos = obj.transform.position;
+
             Vector3 forceDirection = enemyPos - transform.position;
 
             attackable.Attacked(forceAmount, forceDirection.normalized, attackPower);

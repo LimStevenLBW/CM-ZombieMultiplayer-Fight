@@ -28,11 +28,21 @@ public class Attack : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        HandleCollide(collision.gameObject);
+    }
+
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.GetComponent<Attackable>() != null)
+        HandleCollide(other.gameObject);
+    }
+
+    private void HandleCollide(GameObject obj)
+    {
+        if (obj.GetComponent<Attackable>() != null)
         {
-            Attackable attackable = other.gameObject.GetComponent<Attackable>();
+            Attackable attackable = obj.GetComponent<Attackable>();
 
             attackable.Attacked(forceAmount, transform.forward, attackPower);
         }

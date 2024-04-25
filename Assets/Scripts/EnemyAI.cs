@@ -23,7 +23,11 @@ public class EnemyAI : NetworkBehaviour, Attackable
     private Vector3 direction;
     private Vector3 impactAngle;
     private Coroutine StunCoroutine;
-    private bool isStunned  = false;   
+
+    private NetworkVariable<bool> isStunned = new NetworkVariable<bool>(false,
+        NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner
+    );
+
 
     public override void OnNetworkSpawn()
     {
@@ -79,7 +83,7 @@ public class EnemyAI : NetworkBehaviour, Attackable
 
         if (target == null) return;
 
-        if (!isActive || isStunned) return;
+        if (!isActive || isStunned.Value) return;
 
         direction = new Vector3(0,0,0);
 
@@ -146,22 +150,29 @@ public class EnemyAI : NetworkBehaviour, Attackable
 
     IEnumerator StunTimer(float time)
     {
-        isStunned = true;
+        isStunned.Value = true;
         yield return new WaitForSeconds(time);
-        isStunned = false;
+        animator.SetBool("isWalking", true);
+        isStunned.Value = false;
     }
-
+    
     public void Attacked(float playerForceAmount, Vector3 forceDirection, float attackPower)
     {
         //take damage loll
-        enemyStats.TakeDamage(attackPower);
         source.PlayOneShot(tookDamageClip);
-
         StartCoroutine(AttackedCoroutine());
 
+        AttackedServerRpc(playerForceAmount, attackPower, forceDirection.x, forceDirection.y, forceDirection.z);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void AttackedServerRpc(float playerForceAmount, float attackPower, float fx, float fy, float fz)
+    {
+        Stun(1);
         Rigidbody body = gameObject.GetComponent<Rigidbody>();
         Vector3 liftOffset = new Vector3(0, 0.2f, 0);
-        body.AddForce((forceDirection + liftOffset) * playerForceAmount);
+        body.AddForce((new Vector3(fx, fy, fz) + liftOffset) * playerForceAmount);
+        enemyStats.TakeDamage(attackPower);
     }
 
     IEnumerator AttackedCoroutine()
